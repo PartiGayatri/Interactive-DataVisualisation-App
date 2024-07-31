@@ -26,6 +26,9 @@
                 <option value="radar">Radar Chart</option>
             </select>
 
+            <label for="upload-file">Upload Excel File:</label>
+            <input type="file" id="upload-file" accept=".xlsx">
+
             <div id="charts-inputs"></div>
 
             <button type="button" onclick="updateCharts()">Update Charts</button>
@@ -38,7 +41,7 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
-

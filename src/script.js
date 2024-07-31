@@ -88,17 +88,40 @@ function updateCharts() {
     }
 }
 
-// Generate random colors for pie and doughnut chart segments
-function generateColors(num) {
-    const colors = [];
-    for (let i = 0; i < num; i++) {
-        colors.push(`rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.6)`);
-    }
-    return colors;
+function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+        const numCharts = jsonData.length;
+        document.getElementById('num-charts').value = numCharts;
+        updateInputs();
+
+        jsonData.forEach((row, index) => {
+            if (index < numCharts) {
+                const [labels, data] = row;
+                const labelsInput = document.getElementById(`labels-${index}`);
+                const dataInput = document.getElementById(`data-${index}`);
+
+                labelsInput.value = labels.join(',');
+                dataInput.value = data.join(',');
+            }
+        });
+    };
+
+    reader.readAsArrayBuffer(file);
 }
 
-// Update inputs when the number of charts changes
+// Event listeners
 document.getElementById('num-charts').addEventListener('input', updateInputs);
+document.getElementById('upload-file').addEventListener('change', handleFileUpload);
 
 // Initialize form inputs
 updateInputs();
